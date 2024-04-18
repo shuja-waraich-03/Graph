@@ -2,7 +2,13 @@ package graphlib;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.Collection;
 
 public class Graph
 {
@@ -27,6 +33,74 @@ public class Graph
     public boolean containsNode(String name)
     {
         return nodes.containsKey(name);
+    }
+
+    public Collection<Node> getAllNodes()
+    {
+        return nodes.values();
+    }
+
+    public void bfs(String startNodeName, NodeVisitor visitor)
+    {
+        Queue<Node> queue = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
+        Node start = nodes.get(startNodeName);
+        if (start == null)
+        {
+            throw new IllegalArgumentException("Node " + startNodeName + " not found");
+        }
+        queue.add(start);
+        while (!queue.isEmpty())
+        {
+            Node node = queue.remove();
+            if (visited.contains(node))
+            {
+                // skip nodes we have already visited
+                continue;
+            }
+            // visit the node, and mark it as visited
+            visitor.visit(node);
+            visited.add(node);
+            for (Node neighbor : node.getNeighbors())
+            {
+                if (!visited.contains(neighbor))
+                {
+                    queue.add(neighbor);
+                }
+            }
+        }
+    }
+
+    public void dfs(String startNodeName, NodeVisitor visitor)
+    {
+        
+        Node startNode = nodes.get(startNodeName);
+        if (startNode == null)
+        {
+            throw new IllegalArgumentException("Node " + startNodeName + " not found");
+        }
+        Set<Node> visited = new HashSet<>();
+        Stack<Node> stack = new Stack<>();
+        stack.push(startNode);
+        while (!stack.isEmpty())
+        {
+            Node node = stack.pop();
+            if (visited.contains(node))
+            {
+                // skip nodes we have already visited
+                continue;
+            }
+            // visit the node, and mark it as visited
+            visitor.visit(node);
+            visited.add(node);
+            for (Node neighbor : node.getNeighbors())
+            {
+                if (!visited.contains(neighbor))
+                {
+                    stack.push(neighbor);
+                }
+            }
+        }
     }
 
     /**
