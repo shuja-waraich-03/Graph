@@ -46,7 +46,7 @@ public class Graph
                 // make sure we only add each edge once
                 if (node.getName().compareTo(neighbor.getName()) < 0)
                 {
-                    sb.append(String.format("  %s -- %s [label=\"%f\"];\n", node.getName(), neighbor.getName(), node.getWeight(neighbor)));
+                    sb.append(String.format("  %s -- %s [label=\"%.1f\"];\n", node.getName(), neighbor.getName(), node.getWeight(neighbor)));
                 }
             }
         }
@@ -68,7 +68,7 @@ public class Graph
             for (Node neighbor : node.getNeighbors())
             {
                 // append using String.format
-                sb.append(String.format("  %s -> %s [label=\"%f\"];\n", node.getName(), neighbor.getName(), node.getWeight(neighbor)));
+                sb.append(String.format("  %s -> %s [label=\"%.1f\"];\n", node.getName(), neighbor.getName(), node.getWeight(neighbor)));
             }
         }
         sb.append("}\n");

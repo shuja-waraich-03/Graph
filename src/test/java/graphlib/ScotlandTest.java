@@ -15,6 +15,7 @@ public class ScotlandTest
 
     public static void main(String[] args) throws Exception
     {
+        // I can't figure out how to see System.out when I run JUnit through VS Code
         ScotlandTest test = new ScotlandTest();
         test.testGraphViz();
     }
