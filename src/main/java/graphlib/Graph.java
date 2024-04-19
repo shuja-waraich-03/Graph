@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class Graph
 {
@@ -16,7 +17,7 @@ public class Graph
 
     public Graph()
     {
-        nodes = new java.util.HashMap<>();
+        nodes = new HashMap<>();
     }
 
     public Node getOrCreateNode(String name)
@@ -101,6 +102,89 @@ public class Graph
                 }
             }
         }
+    }
+
+    private static interface MyQueue
+    {
+        void add(Node node);
+        Node remove();
+        boolean isEmpty();
+    }
+
+    private void xfs(String startNodeName, NodeVisitor visitor, MyQueue queue)
+    {
+        Node startNode = nodes.get(startNodeName);
+        if (startNode == null)
+        {
+            throw new IllegalArgumentException("Node " + startNodeName + " not found");
+        }
+        Set<Node> visited = new HashSet<>();
+        queue.add(startNode);
+        while (!queue.isEmpty())
+        {
+            Node node = queue.remove();
+            if (visited.contains(node))
+            {
+                // skip nodes we have already visited
+                continue;
+            }
+            // visit the node, and mark it as visited
+            visitor.visit(node);
+            visited.add(node);
+            for (Node neighbor : node.getNeighbors())
+            {
+                if (!visited.contains(neighbor))
+                {
+                    queue.add(neighbor);
+                }
+            }
+        }
+    }
+
+    public void bfs2(String startNodeName, NodeVisitor visitor)
+    {
+        xfs(startNodeName, visitor, new MyQueue()
+        {
+            private Queue<Node> queue = new LinkedList<>();
+
+            public void add(Node node)
+            {
+                queue.add(node);
+            }
+
+            public Node remove()
+            {
+                return queue.remove();
+            }
+
+            public boolean isEmpty()
+            {
+                return queue.isEmpty();
+            }
+        });
+    }
+
+    public void dfs2(String startNodeName, NodeVisitor visitor)
+    {
+        xfs(startNodeName, visitor, new MyQueue()
+        {
+            private Stack<Node> stack = new Stack<>();
+
+            public void add(Node node)
+            {
+                stack.push(node);
+            }
+
+            public Node remove()
+            {
+                return stack.pop();
+            }
+
+            public boolean isEmpty()
+            {
+                return stack.isEmpty();
+            }
+        });
     }
 
     /**

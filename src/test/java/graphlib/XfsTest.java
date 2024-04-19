@@ -3,6 +3,8 @@ package graphlib;
 import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class XfsTest
 {
@@ -48,19 +50,24 @@ public class XfsTest
         }
     }
 
+
     @Test
-    public void testConnected() throws Exception
+    public void testMystery() throws Exception
     {
         Graph g = Graph.readUndirectedUnweightedGraph(new FileInputStream("datafiles/graph5.txt"));
         Collection<Node> nodes = g.getAllNodes();
+        int max = 0;
 
         for (Node node : nodes)
         {
             CountingVisitor countingVisitor = new CountingVisitor();
             g.bfs(node.getName(), countingVisitor);
-            // TODO: did we visit all the nodes?
+            if (countingVisitor.getCount() > max)
+            {
+                max = countingVisitor.getCount();
+            }
         }
-        
+        System.out.printf("max: %d\n", max);
     }
 
 }
