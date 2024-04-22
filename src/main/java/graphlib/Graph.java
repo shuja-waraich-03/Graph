@@ -2,11 +2,13 @@ package graphlib;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Collection;
 import java.util.HashMap;
@@ -102,6 +104,67 @@ public class Graph
                 }
             }
         }
+    }
+
+    private static class Path implements Comparable<Path>
+    {
+        private Node node;
+        private double weight;
+        // TODO: include the path
+        //private List<Node> path;
+
+        public Path(Node node, double weight)
+        {
+            this.node = node;
+            this.weight = weight;
+        }
+
+        public Node getNode()
+        {
+            return node;
+        }
+
+        public double getWeight()
+        {
+            return weight;
+        }
+
+        public int compareTo(Path other)
+        {
+            return Double.compare(weight, other.weight);
+        }
+    }
+
+    public Map<Node, Double> dijkstra()
+    {
+        Map<Node, Double> distances = new HashMap<>();
+        
+        Node start = nodes.values().iterator().next();
+        PriorityQueue<Path> pq = new PriorityQueue<>();
+
+        pq.add(new Path(start, 0.0));
+
+        while (!pq.isEmpty() && distances.size() < nodes.size())
+        {
+            Path edge = pq.remove();
+            Node node = edge.getNode();
+            if (distances.containsKey(node)) continue;
+
+            double distance = edge.getWeight();
+
+            distances.put(node, distance);
+            
+            for (Node neighbor : node.getNeighbors())
+            {
+                if (!distances.containsKey(neighbor))
+                {
+                    double newDistance = distance + node.getWeight(neighbor);
+                    pq.add(new Path(neighbor, newDistance));
+                }
+            }
+        }
+        
+        return distances;
     }
 
     private static interface MyQueue
