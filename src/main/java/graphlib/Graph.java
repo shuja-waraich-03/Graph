@@ -135,11 +135,11 @@ public class Graph
         }
     }
 
-    public Map<Node, Double> dijkstra()
+    public Map<Node, Double> dijkstra(String startNodeName)
     {
         Map<Node, Double> distances = new HashMap<>();
         
-        Node start = nodes.values().iterator().next();
+        Node start = nodes.get(startNodeName);
         PriorityQueue<Path> pq = new PriorityQueue<>();
 
         pq.add(new Path(start, 0.0));
@@ -404,6 +404,46 @@ public class Graph
             Node nodeA = graph.getOrCreateNode(nameA);
             Node nodeB = graph.getOrCreateNode(nameB);
             nodeA.addDirectedEdge(nodeB, weight);
+        }
+        scanner.close();
+        return graph;
+    }
+
+    public int getNumComponents()
+    {
+        Set<Node> visited = new HashSet<>();
+        int numComponents = 0;
+        for (Node node : nodes.values())
+        {
+            if (!visited.contains(node))
+            {
+                numComponents++;
+                dfs(node.getName(), new NodeVisitor()
+                {
+                    public void visit(Node node)
+                    {
+                        visited.add(node);
+                    }
+                });
+            }
+        }
+        return numComponents;
+    }
+
+    public static Graph readIslandFile(InputStream in) 
+    {
+        Graph graph = new Graph();
+        Scanner scanner = new Scanner(in);
+        int numRows = scanner.nextInt();
+        int numCols = scanner.nextInt();
+        // TODO: pick up here
+        while (scanner.hasNext())
+        {
+            String nameA = scanner.next();
+            String nameB = scanner.next();
+            Node nodeA = graph.getOrCreateNode(nameA);
+            Node nodeB = graph.getOrCreateNode(nameB);
+            nodeA.addUnweightedUndirectedEdge(nodeB);
         }
         scanner.close();
         return graph;

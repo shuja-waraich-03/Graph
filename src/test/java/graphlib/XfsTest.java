@@ -11,7 +11,7 @@ public class XfsTest
     @Test
     public void testBfs() throws Exception
     {
-        System.out.println("Hello");
+        //System.out.println("Hello");
         Graph g = Graph.readUndirectedUnweightedGraph(new FileInputStream("datafiles/graph1.txt"));
         g.bfs("0", new NodeVisitor()
         {
