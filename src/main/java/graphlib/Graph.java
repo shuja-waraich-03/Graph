@@ -449,4 +449,22 @@ public class Graph
         return graph;
     }
 
+    public Graph inverseGraph() {
+        Graph newGraph = new Graph();
+
+        for (Node n1 : getAllNodes()) {
+            Node newN1 = newGraph.getOrCreateNode(n1.getName());
+            for (Node n2 : getAllNodes()) {
+                Node newN2 = newGraph.getOrCreateNode(n2.getName());
+
+                if (!n1.hasEdge(n2)) {
+                    newN1.addUnweightedUndirectedEdge(newN2);
+                }
+            }
+        }
+        
+
+        return newGraph;
+    }
+
 }
