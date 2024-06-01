@@ -10,6 +10,9 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+
+import assignment.TestIslands.CountingVisitor;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -104,6 +107,21 @@ public class Graph
                 }
             }
         }
+    }
+
+    public int getMaxIslandSize()
+    {
+        int max = 0;
+        for (Node n : getAllNodes())
+        {
+            CountingVisitor counting = new CountingVisitor();
+            bfs(n.getName(), counting);
+            if (counting.getCount() > max)
+            {
+                max = counting.getCount();
+            }
+        }
+        return max;
     }
 
     private static class Path implements Comparable<Path>
@@ -449,22 +467,76 @@ public class Graph
         return graph;
     }
 
+
+
+
     public Graph inverseGraph() {
         Graph newGraph = new Graph();
-
-        for (Node n1 : getAllNodes()) {
-            Node newN1 = newGraph.getOrCreateNode(n1.getName());
-            for (Node n2 : getAllNodes()) {
-                Node newN2 = newGraph.getOrCreateNode(n2.getName());
-
-                if (!n1.hasEdge(n2)) {
-                    newN1.addUnweightedUndirectedEdge(newN2);
+    
+        // Get all nodes from the original graph
+        Collection<Node> allNodes = getAllNodes();
+        
+        // Create all nodes in the new graph
+        for (Node n1 : allNodes) {
+            newGraph.getOrCreateNode(n1.getName());
+        }
+    
+        // Add inverse edges to the new graph
+        for (Node n1 : allNodes) {
+            for (Node n2 : allNodes) {
+                if (!n1.equals(n2) && !n1.hasEdge(n2)) {
+                    Node newN1 = newGraph.getOrCreateNode(n1.getName());
+                    Node newN2 = newGraph.getOrCreateNode(n2.getName());
+                    if (!newN1.hasEdge(newN2)) {
+                        newN1.addUnweightedUndirectedEdge(newN2);
+                    }
                 }
             }
         }
-        
-
+    
         return newGraph;
     }
+    
+    public Map<String, Set<String>> getReachableNodes() {
+        Map<String, Set<String>> reachableNodes = new HashMap<>();
+        for (String nodeName : nodes.keySet()) {
+            reachableNodes.put(nodeName, new HashSet<>());
+            dfsForReachability(nodeName, nodeName, reachableNodes, new HashSet<>());
+        }
+        return reachableNodes;
+    }
 
+    private void dfsForReachability(String startNodeName, String currentNodeName, Map<String, Set<String>> reachableNodes, Set<String> visited) {
+        Node currentNode = nodes.get(currentNodeName);
+        if (currentNode == null) {
+            return;
+        }
+        visited.add(currentNodeName);
+        for (Node neighbor : currentNode.getNeighbors()) {
+            if (!visited.contains(neighbor.getName())) {
+                reachableNodes.get(startNodeName).add(neighbor.getName());
+                dfsForReachability(startNodeName, neighbor.getName(), reachableNodes, visited);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        // Sample graph creation
+        Graph graph = new Graph();
+        graph.getOrCreateNode("1").addUnweightedDirectedEdge(graph.getOrCreateNode("2"));
+        graph.getOrCreateNode("7").addUnweightedDirectedEdge(graph.getOrCreateNode("8"));
+        graph.getOrCreateNode("2").addUnweightedDirectedEdge(graph.getOrCreateNode("3"));
+        graph.getOrCreateNode("3").addUnweightedDirectedEdge(graph.getOrCreateNode("4"));
+        graph.getOrCreateNode("4").addUnweightedDirectedEdge(graph.getOrCreateNode("1"));
+
+        // Compute reachable nodes
+        Map<String, Set<String>> result = graph.getReachableNodes();
+
+        // Print the result
+        for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
+            System.out.println("From node " + entry.getKey() + " reachable nodes are " + entry.getValue());
+        }
+    }
 }
+
+
