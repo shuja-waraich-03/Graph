@@ -1,6 +1,6 @@
 ## Work I have Done
 
-# Islands
+### Islands
 Added getMaxIslandSize method.
 Added 3 new datafiles for testing Islands:
     -nolandIsland.txt : to test when there is only water (i.e all 0's).
@@ -9,9 +9,9 @@ Added 3 new datafiles for testing Islands:
 
 Wrote Junit Test cases in a seperate files to maintain encapsulation and not rely on main only.
 
-# Inverse
+### Inverse
 Added Junit tests for Inverse functionality.
 
-# Reachability
+### Reachability
 Added methods for Reachability: getReachableNodes, dfsForRachability
 Added Test Cases for Reachability.
