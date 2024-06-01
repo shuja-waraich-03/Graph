@@ -1,5 +1,5 @@
-## Work I have Done
-
+## Work Done on Graphs
+---
 ### Islands
 Added getMaxIslandSize method.
 Added 3 new datafiles for testing Islands:
